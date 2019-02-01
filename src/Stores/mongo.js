@@ -5,12 +5,11 @@ module.exports = class mongo {
 		this.url = url;
 	}
 
-	InsertAnalysis(collection, json){
+	InsertAnalysis(db, collection, json){
 		MongoClient.connect(this.url, function(err, db) {
 		if (err) throw err;
-		var dbo = db.db(collection);
-		var myobj = json;
-		dbo.collection("customers").insertOne(myobj, function(err, res) {
+		var dbo = db.db("Analysis");
+		dbo.collection(collection).insertOne(json, function(err, res) {
 			if (err) throw err;
 				var analysis = JSON.stringify(json);
 				console.log("Document Inserted \n" + analysis);
