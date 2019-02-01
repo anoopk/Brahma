@@ -3,15 +3,13 @@ var request = require("request");
 
 module.exports = class aylien {	
 	constructor (application_id, application_key){
-		this.application_id = application_id;
-		this.application_key = application_key;
-	}
-	
-	Analyse(json) {
-		var textapi = new AYLIENTextAPI({
+		this.textapi = new AYLIENTextAPI({
 		  application_id: this.application_id,
 		  application_key: this.application_key
 		});
+	}
+	
+	Analyse(json) {
 		// Return new promise 
 		return new Promise(function(resolve, reject) {
 			// Do async job
