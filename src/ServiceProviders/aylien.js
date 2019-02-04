@@ -2,7 +2,7 @@ var AYLIENTextAPI = require('aylien_textapi');
 var request = require("request");
 
 module.exports = class aylien {	
-	constructor (application_id, application_key){
+	constructor (application_id, application_key, db){
 		this.application_id = application_id;
 		this.application_key = application_key;
 	}
@@ -15,7 +15,7 @@ module.exports = class aylien {
 		// Return new promise 
 		return new Promise(function(resolve, reject) {
 			// Do async job
-			textapi.sentiment(json, function(err, resp, body) {
+			textapi.combined(json, function(err, resp, body) {
 				if (err) {
 					reject(err);
 				} else {
