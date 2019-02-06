@@ -9,7 +9,7 @@ function main() {
 	const mongoConfig = config.mongodb;
 	var mymongo = new mongo(mongoConfig.url);	
 	
-	lr.eachLine('./input/inputURLList.txt', function(url, last){
+	lr.eachLine('../input/inputURLList.txt', function(url, last){
 		var ai = new aylien(aiConfig.application_id, aiConfig.application_key);		
 		var aiPABS = ai.AnalyseABS(url);			
 		var aiP = ai.Analyse(url);		
@@ -18,8 +18,9 @@ function main() {
 			mymongo.InsertAnalysis('ABS', results[0], url);		
 		
 			var classifications = results[1];
+			delete classifications.text;
 			for(var result in classifications){
-				for (var endpoint in classifications[result]){
+				for (var endpoint in classifications[result]){				
 					mymongo.InsertAnalysis(classifications[result][endpoint].endpoint, classifications[result][endpoint].result, url);
 				}
 			}
