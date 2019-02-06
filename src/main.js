@@ -7,7 +7,7 @@ const config = require('./config.json');
 function main() { 
 	const aiConfig = config.aylien;
 	const mongoConfig = config.mongodb;
-	var mymongo = new mongo(mongoConfig.url, mongoConfig.database);	
+	var mymongo = new mongo(mongoConfig.url);	
 	
 	lr.eachLine('./input/inputURLList.txt', function(url, last){
 		var ai = new aylien(aiConfig.application_id, aiConfig.application_key);		
@@ -15,16 +15,14 @@ function main() {
 		var aiP = ai.Analyse(url);		
 		
 		Promise.all([aiPABS, aiP]).then(function(results){
-			var resp = results[0];
-			delete resp.text;			
-			delete resp.sentences;
-			resp['url'] = url;
-			mymongo.InsertAnalysis('ABS', resp);		
-			
-			resp = results[1];
-			delete resp.text;
-			resp['url'] = url;			
-			mymongo.InsertAnalysis("Sentiment", resp);			
+			mymongo.InsertAnalysis('ABS', results[0], url);		
+		
+			var classifications = results[1];
+			for(var result in classifications){
+				for (var endpoint in classifications[result]){
+					mymongo.InsertAnalysis(classifications[result][endpoint].endpoint, classifications[result][endpoint].result, url);
+				}
+			}
 			return results;			
 		})
 		return;	
