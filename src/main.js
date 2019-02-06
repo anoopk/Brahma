@@ -1,6 +1,7 @@
 var mongo = require("./stores/mongo");
 var aylien = require("./serviceproviders/aylien");
 var fs = require('fs');
+var lr = require('line-reader');
 const config = require('./config.json');
 
 function main() { 
@@ -9,32 +10,38 @@ function main() {
 	var ai = new aylien(aiConfig.application_id, aiConfig.application_key);
 	var mymongo = new mongo(mongoConfig.url, mongoConfig.database);	
 	
-	var myObj = {'url': 'https://www.news18.com/news/auto/all-new-maruti-suzuki-wagon-r-first-drive-review-tallboy-is-back-2024089.html', 'endpoint': ['classify/iab-qag', 'sentiment']};
-	var myObjABS = {'url': 'https://www.news18.com/news/auto/all-new-maruti-suzuki-wagon-r-first-drive-review-tallboy-is-back-2024089.html', 'domain': 'cars'};
-	var inputKeys = Object.keys(myObj);
-	
-	var aiPABS = ai.AnalyseABS(myObjABS);	
-	
-	aiPABS.then(function(resp) {
-		delete resp.text;
-		delete resp.sentences;
-		mymongo.InsertAnalysis('ABS', resp);		
-	}, function(err) {
-		throw(err);
-    })
-	
-    var aiP = ai.Analyse(myObj);		
-	aiP.then(function(resp) {
-		var analysis = JSON.parse(JSON.stringify(resp));
-		var results = Object.keys(analysis.results);
-		results.forEach(function(result){
-			analysis.results[result].result[inputKeys[0]] = myObj[inputKeys[0]];
-			mymongo.InsertAnalysis(analysis.results[result].endpoint, analysis.results[result].result);			
-		});		
-		return results;
-    }, function(err) {
-		throw(err);
-    })
+	lr.eachLine('./input/inputURLList.txt', function(url, last){
+		var myObj = {'endpoint': ['classify/iab-qag', 'sentiment']};
+		var myObjABS = {'domain': 'cars'};
+		
+		myObj.url = url;
+		myObjABS.url = url;
+		
+		var aiPABS = ai.AnalyseABS(myObjABS);			
+		var aiP = ai.Analyse(myObj);		
+		
+		Promise.all([aiPABS, aiP]).then(function(results){
+			var resp = results[0];
+			delete resp.text;			
+			delete resp.sentences;
+			resp['url'] = url;
+			mymongo.InsertAnalysis('ABS', resp);		
+			
+			resp = results[1];
+			delete resp.text;
+			
+			var inputKeys = Object.keys(myObj);				
+			var analysis = JSON.parse(JSON.stringify(resp));
+			var results = Object.keys(analysis.results);
+			results.forEach(function(result){
+				analysis.results[result].result['url'] = url;
+				mymongo.InsertAnalysis(analysis.results[result].endpoint, analysis.results[result].result);			
+			});		
+			return results;			
+		})
+		return;	
+	});
+	return;	
 }
 
 main();

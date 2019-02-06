@@ -13,7 +13,6 @@ module.exports = class mongo {
 			dbo.collection(collection).insertOne(json, function(err, res) {
 				if (err) throw err;
 					var analysis = JSON.stringify(json);
-					console.log("Document Inserted \n" + analysis);
 					db.close();
 				});
 		});
