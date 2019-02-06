@@ -2,20 +2,22 @@ var AYLIENTextAPI = require('aylien_textapi');
 var request = require("request");
 
 module.exports = class aylien {	
-	constructor (application_id, application_key, db){
+	constructor (application_id, application_key){
 		this.application_id = application_id;
 		this.application_key = application_key;
 	}
 
-	AnalyseABS(json){
+	AnalyseABS(url){
 		var textapi = new AYLIENTextAPI({
 		  application_id: this.application_id,
 		  application_key: this.application_key
 		});
 		// Return new promise 
 		return new Promise(function(resolve, reject) {
+			var myObjABS = {'domain': 'cars'};			
+			myObjABS.url = url;			
 			// Do async job
-			textapi.aspectBasedSentiment(json, function(err, resp, body) {
+			textapi.aspectBasedSentiment(myObjABS, function(err, resp, body) {
 				if (err) {
 					reject(err);
 				} else {
@@ -25,15 +27,18 @@ module.exports = class aylien {
 		})		
 	}
 	
-	Analyse(json) {
+	Analyse(url) {		
 		var textapi = new AYLIENTextAPI({
 		  application_id: this.application_id,
 		  application_key: this.application_key
 		});
 		// Return new promise 
 		return new Promise(function(resolve, reject) {
+			var myObj = {'endpoint': ['classify/iab-qag', 'sentiment']};		
+			myObj.url = url;
+			
 			// Do async job
-			textapi.combined(json, function(err, resp, body) {
+			textapi.combined(myObj, function(err, resp, body) {
 				if (err) {
 					reject(err);
 				} else {
