@@ -1,34 +1,41 @@
 var mongo = require("./stores/mongo");
 var aylien = require("./serviceproviders/aylien");
-
-// Mongo cluster Info
-var url = "mongodb://anoop:Rucksa0k@cluster0-shard-00-00-tcllz.mongodb.net:27017,cluster0-shard-00-01-tcllz.mongodb.net:27017,cluster0-shard-00-02-tcllz.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true";
-var db = "Analysis";
-var collection = "Classification";
-
-// Aylien credentials
-var application_id = "3e37c5de";
-var application_key = "69a0c0f40f7137b9e51eed2f06df37b9";
-
+var fs = require('fs');
+const config = require('./config.json');
 
 function main() { 
-	var ai = new aylien(application_id, application_key);
-	var mymongo = new mongo(url, db);	
-	var myObj = {'text': 'Mike tyson is a great boxer', 'endpoint': ['classify', 'sentiment', 'language', 'extract']};
+	const aiConfig = config.aylien;
+	const mongoConfig = config.mongodb;
+	var ai = new aylien(aiConfig.application_id, aiConfig.application_key);
+	var mymongo = new mongo(mongoConfig.url, mongoConfig.database);	
 	
-    var initializePromise = ai.Analyse(myObj);
-    initializePromise.then(function(result) {		
-		var analysis = JSON.parse(JSON.stringify(result));
+	var myObj = {'url': 'https://www.news18.com/news/auto/all-new-maruti-suzuki-wagon-r-first-drive-review-tallboy-is-back-2024089.html', 'endpoint': ['classify/iab-qag', 'sentiment']};
+	var myObjABS = {'url': 'https://www.news18.com/news/auto/all-new-maruti-suzuki-wagon-r-first-drive-review-tallboy-is-back-2024089.html', 'domain': 'cars'};
+	var inputKeys = Object.keys(myObj);
+	
+	var aiPABS = ai.AnalyseABS(myObjABS);	
+	
+	aiPABS.then(function(resp) {
+		delete resp.text;
+		delete resp.sentences;
+		mymongo.InsertAnalysis('ABS', resp);		
+	}, function(err) {
+		throw(err);
+    })
+	
+    var aiP = ai.Analyse(myObj);		
+	aiP.then(function(resp) {
+		var analysis = JSON.parse(JSON.stringify(resp));
 		var results = Object.keys(analysis.results);
 		results.forEach(function(result){
+			analysis.results[result].result[inputKeys[0]] = myObj[inputKeys[0]];
 			mymongo.InsertAnalysis(analysis.results[result].endpoint, analysis.results[result].result);			
-		});
-		
-		return result;
+		});		
+		return results;
     }, function(err) {
-        console.log(err);
 		throw(err);
     })
 }
 
 main();
+
