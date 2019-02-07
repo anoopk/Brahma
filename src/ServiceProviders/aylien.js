@@ -29,7 +29,7 @@ module.exports = class aylien {
 	}
 	
 	Analyse() {		
-		this.obj.endpoint = ['classify/iab-qag', 'sentiment'];		
+		this.obj.endpoint = ['classify/iab-qag', 'sentiment', 'entities'];		
 		var me = this;		
 			
 		// Return new promise 

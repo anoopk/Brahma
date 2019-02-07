@@ -6,27 +6,38 @@ var lr = require('line-reader');
 var l = require('./logger');
 const config = require('./config.json');
 
+function createDBSnapshots(results, url){
+	var i = 0;
+	var dbss = {};
+	dbss[i++] = {'collection': 'ABS', 'data': results[0]};
+	var classifications = results[1];
+	delete classifications.text;
+	for(var result in classifications){
+		for (var endpoint in classifications[result]){				
+			delete classifications[result][endpoint].result.text;			
+			delete classifications[result][endpoint].result.sentences;
+			classifications[result][endpoint].result.url = url;			
+			dbss[i++] = {'collection': classifications[result][endpoint].endpoint, 'data': classifications[result][endpoint].result};	
+		}
+	}
+	return dbss;
+}
+
 function analyse(filename, logger) { 
 	const aiConfig = config.aylien;
 	const mongoConfig = config.mongodb;
-	var mymongo = new mongo(mongoConfig.url);	
+	var mymongo = new mongo(mongoConfig.url, 'Analysis');	
 	
 	lr.eachLine(filename, function(url, last){
 		var ai = new aylien(aiConfig.application_id, aiConfig.application_key, url, l);		
 		var aiPABS = ai.AnalyseABS();			
 		var aiP = ai.Analyse();		
-		var l = logger;
 		Promise.all([aiPABS, aiP]).then(function(results){
-				var classifications = results[1];
-				delete classifications.text;
-				for(var result in classifications){
-					for (var endpoint in classifications[result]){				
-						mymongo.InsertAnalysis(classifications[result][endpoint].endpoint, classifications[result][endpoint].result, url);
-					}
-				}
+				console.log("Aylienized ", url);
+				mymongo.InsertBulkAnalysis(createDBSnapshots(results, url));
 				return results;			
 		}).
-			catch(error => {console.log("Aylienization failed. Check URL: ", url);
+			catch(error => {console.log("Failed to Aylienize ", url);
 		});
 		return;	
 	});
