@@ -7,10 +7,11 @@ module.exports = class mongo {
 	}
 
 	InsertBulkAnalysis(dbss){
+		var dbAnalysis = this.db;
 		MongoClient.connect(this.mongo, { useNewUrlParser: true }, function(err, db) {
 			Object.keys(dbss).forEach(function(key){
 					if (err) throw err;
-					var dbo = db.db("Analysis");
+					var dbo = db.db(dbAnalysis);
 					dbo.collection(dbss[key].collection).insertOne(dbss[key].data, function(err, res) {
 						if (err) throw err;
 							db.close();

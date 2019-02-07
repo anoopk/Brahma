@@ -9,6 +9,7 @@ const config = require('./config.json');
 function createDBSnapshots(results, url){
 	var i = 0;
 	var dbss = {};
+	results[0].url = url;
 	dbss[i++] = {'collection': 'ABS', 'data': results[0]};
 	var classifications = results[1];
 	delete classifications.text;
