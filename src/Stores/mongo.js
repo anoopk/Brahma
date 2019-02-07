@@ -17,7 +17,7 @@ module.exports = class mongo {
 				delete json.text;
 				json['url'] = url;						
 		}
-		MongoClient.connect(this.url, function(err, db) {
+		MongoClient.connect(this.url, { useNewUrlParser: true }, function(err, db) {
 			if (err) throw err;
 			var dbo = db.db("Analysis");
 			dbo.collection(collection).insertOne(json, function(err, res) {
