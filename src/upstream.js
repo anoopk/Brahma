@@ -35,5 +35,4 @@ function aggregate(database, obj){
 	});
 }
 
-module.exports.analyse = analyse;
 module.exports.aggregate = aggregate;
