@@ -26,10 +26,11 @@ module.exports = class mongo {
 		});
 	}
 	
-	InsertAnalysis(collection, json, url){
+	InsertAnalysis(collection, json){
+		var dbAnalysis = this.db;
 		MongoClient.connect(this.mongo, { useNewUrlParser: true }, function(err, db) {
 			if (err) throw err;
-			var dbo = db.db("Analysis");
+			var dbo = db.db(dbAnalysis);
 			dbo.collection(collection).insertOne(json, function(err, res) {
 				if (err) throw err;
 					var analysis = JSON.stringify(json);
