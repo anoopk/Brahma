@@ -2,14 +2,6 @@ var mongo = require("./stores/mongo");
 var MongoClient = require('mongodb').MongoClient;
 const config = require('./config.json');
 
-function analyse(database, obj){
-	var collection = obj.organization + "/" + obj.product + "/" + obj.analysis;
-	const mongoConfig = config.mongodb;
-	var mymongo = new mongo(mongoConfig.url, database);
-	mymongo.InsertAnalysis(collection, obj);
-}
-
-
 function aggregate(database, obj){
 	var collection = obj.organization + "/" + obj.product + "/" + obj.analysis;
 	const mongoConfig = config.mongodb;
@@ -18,17 +10,16 @@ function aggregate(database, obj){
 		if (err) throw err;
 		var dbo = db.db(database);
 		var coll = dbo.collection(collection);
-		coll.count().then((count) => {
+		coll.countDocuments().then((count) => {
 			if(0 < count){
-				console.log("created", count);
 				coll.findOne({}, {sort: { reviews: -1 }}, function(err, result) {
 					if (err) throw err;
-					console.log("aggregate", result);
+					console.log("Last sentiment object", result);
 					obj.sentiment = ((result.reviews * result.sentiment) + obj.sentiment)/(result.reviews+1);
 					obj.reviews = result.reviews+1;
 					obj.timestamp = { type: Date, default: Date.now};
 					var mymongo = new mongo(mongoConfig.url, database);
-					console.log("aggregate", obj);
+					console.log("Current sentiment object", obj);
 					mymongo.InsertAnalysis(collection, obj);
 					db.close();
 				});					
@@ -37,12 +28,10 @@ function aggregate(database, obj){
 				obj.reviews = 1;
 				obj.timestamp = { type: Date, default: Date.now};
 				var mymongo = new mongo(mongoConfig.url, database);
-				console.log("aggregate", obj);
+				console.log("Introducing Collection with ", obj);
 				mymongo.InsertAnalysis(collection, obj);
 			}				
 		});
-		db.close();
-
 	});
 }
 
