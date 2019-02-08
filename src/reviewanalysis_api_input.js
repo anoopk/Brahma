@@ -10,7 +10,7 @@ function createDBSnapshots(results, url){
 	var i = 0;
 	var dbss = {};
 	results[0].url = url;
-	dbss[i++] = {'collection': 'ABS', 'data': results[0]};
+	dbss[i++] = {'collection': 'abs', 'data': results[0]};
 	var classifications = results[1];
 	delete classifications.text;
 	for(var result in classifications){
@@ -28,7 +28,6 @@ function analyse(filename, logger) {
 	const aiConfig = config.aylien;
 	const mongoConfig = config.mongodb;
 	var mymongo = new mongo(mongoConfig.url, 'Analysis');	
-	
 	lr.eachLine(filename, function(url, last){
 		var ai = new aylien(aiConfig.application_id, aiConfig.application_key, url, l);		
 		var aiPABS = ai.AnalyseABS();			

@@ -1,4 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
+var fs = require('fs');
 
 module.exports = class mongo {
 	constructor(mongo, db) {
@@ -11,6 +12,11 @@ module.exports = class mongo {
 		MongoClient.connect(this.mongo, { useNewUrlParser: true }, function(err, db) {
 			Object.keys(dbss).forEach(function(key){
 					if (err) throw err;
+					fs.appendFile("mongodb.log", dbss[key].data, (error) => {		
+						if(error)	
+							console.log("Error writing analysis data to local file");
+					});
+					console.log(dbss[key].collection, " data logged into mongodb.txt");
 					var dbo = db.db(dbAnalysis);
 					dbo.collection(dbss[key].collection).insertOne(dbss[key].data, function(err, res) {
 						if (err) throw err;
