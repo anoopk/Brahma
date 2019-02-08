@@ -17,20 +17,17 @@ function aggregate(database, obj){
 					console.log("Last sentiment object", result);
 					obj.sentiment = ((result.reviews * result.sentiment) + obj.sentiment)/(result.reviews+1);
 					obj.reviews = result.reviews+1;
-					obj.timestamp = { type: Date, default: Date.now};
-					var mymongo = new mongo(mongoConfig.url, database);
 					console.log("Current sentiment object", obj);
-					mymongo.InsertAnalysis(collection, obj);
-					db.close();
 				});					
 			}
 			else {
-				obj.reviews = 1;
-				obj.timestamp = { type: Date, default: Date.now};
-				var mymongo = new mongo(mongoConfig.url, database);
-				console.log("Introducing Collection with ", obj);
-				mymongo.InsertAnalysis(collection, obj);
-			}				
+				obj.reviews = 1;				
+				console.log("Introducing Collection with ", obj);				
+			}
+			obj.timestamp = { type: Date, default: Date.now};
+			var mymongo = new mongo(mongoConfig.url, database);
+			mymongo.InsertAnalysis(collection, obj);
+			db.close();			
 		});
 	});
 }
