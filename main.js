@@ -5,10 +5,10 @@ var lr = require('line-reader');
 var us = require('./src/upstream.js');
 
 var obj = {"sentiment":.54, "organization":"Maruti", "product":"WagonR", "analysis":"sentiment", "reviews": 3, timestamp: { type: Date, default: Date.now}};
-us.analyse("Statistics", obj);
+//us.analyse("Statistics", obj);
 
-var newobj = {"sentiment":.34, "organization":"Maruti", "product":"WagonR", "analysis":"sentiment"};
+var newobj = {"sentiment":.345, "organization":"Maruti", "product":"WagonR", "analysis":"sentiment"};
 us.aggregate("Statistics", newobj);
-
+//us.drop("Statistics", "Maruti/WagonR");
 //reviewanalysis.analyse("input/inputURLList.txt");
 //wikianalysis.analyse("input/inputWikiList.txt");
