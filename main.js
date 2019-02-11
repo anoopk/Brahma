@@ -1,15 +1,18 @@
 var lr = require('line-reader');
 
+const config = require('./lib/config.json');
+console.log(config);
+ 
 var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
+reviewanalysis.analyse(config.aylien, config.mongodb, config.sources);
+
 var wikianalysis = require('./lib/sources/wiki/analysis_api_input');
+wikianalysis.analyse(config.aylien, config.mongodb, config.sources);
+
+
 //var us = require('./lib/upstream.js');
-
-//var obj = {"sentiment":.54, "organization":"Maruti", "product":"WagonR", "analysis":"sentiment", "reviews": 3, timestamp: { type: Date, default: Date.now}};
-//us.analyse("Statistics", obj);
-
 //var newobj = {"sentiment":.45, "organization":"Maruti", "product":"WagonR", "analysis":"sentiment"};
-//us.aggregate("Statistics", newobj);
-//us.drop("Statistics", "Maruti/WagonR");
+//us.aggregate(newobj, config.aylien.watch, config.mongodb);
 
-reviewanalysis.analyse("input/inputUrlList.txt");
-wikianalysis.analyse("input/inputWikiList.txt");
+
+
