@@ -21,6 +21,6 @@
     },
 	"sources": {
 			"url": "input/inputUrlList.txt",
-			"urlWithMetadata": "input/inputWikiList.txt"
+			"urlWithMetadata": "input/inputUrlList.txt"
 	}
 }
