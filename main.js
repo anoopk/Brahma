@@ -1,14 +1,18 @@
 var lr = require('line-reader');
 const config = require('./config.json');
-
+const mongo = require('./lib/Stores/mongo')
 const urlReader = require('./lib/readers/urlMetaData')
+
 urlReader.nextUrl("input/inputURLList.txt", config.aylien, result => {
 	console.log(result);
-	var aylien = require('./lib/ServiceProviders/aylien');
-	//aylien.analyse(config.aylien, config.mongodb, result);	
+	var aylien = require('./lib/ServiceProviders/analysis');
+	aylien.analyse(config.aylien, result, (snapshots) => {
+		var mymongo = new mongo(config.mongodb.url, 'Reviews');
+		mymongo.InsertBulkAnalysis(snapshots);
+	});
 });
 		
-var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
+//var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
 //var pr = reviewanalysis.analyse(config.aylien, config.mongodb, config.sources);
 
 //var wikianalysis = require('./lib/sources/wiki/analysis_api_input');
