@@ -1,6 +1,5 @@
 var lr = require('line-reader');
-
-const config = require('./lib/config.json');
+const config = require('./config.json');
 //console.log(config);
  
 var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
