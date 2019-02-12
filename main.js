@@ -1,12 +1,18 @@
 var lr = require('line-reader');
 const config = require('./config.json');
-//console.log(config);
- 
-var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
-var pr = reviewanalysis.analyse(config.aylien, config.mongodb, config.sources);
 
-var wikianalysis = require('./lib/sources/wiki/analysis_api_input');
-wikianalysis.analyse(config.aylien, config.mongodb, config.sources);
+const urlReader = require('./lib/readers/urlMetaData')
+urlReader.nextUrl("input/inputURLList.txt", config.aylien, result => {
+	console.log(result);
+	var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
+	reviewanalysis.analyse(config.aylien, config.mongodb, result);	
+});
+		
+var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
+//var pr = reviewanalysis.analyse(config.aylien, config.mongodb, config.sources);
+
+//var wikianalysis = require('./lib/sources/wiki/analysis_api_input');
+//wikianalysis.analyse(config.aylien, config.mongodb, config.sources);
 
 
 //var us = require('./lib/upstream.js');
