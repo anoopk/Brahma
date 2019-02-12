@@ -7,7 +7,7 @@ var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
 reviewanalysis.analyse(config.aylien, config.mongodb, config.sources);
 
 var wikianalysis = require('./lib/sources/wiki/analysis_api_input');
-//wikianalysis.analyse(config.aylien, config.mongodb, config.sources);
+wikianalysis.analyse(config.aylien, config.mongodb, config.sources);
 
 
 //var us = require('./lib/upstream.js');
