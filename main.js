@@ -4,11 +4,12 @@ const mongo = require('./lib/Stores/mongo')
 const urlReader = require('./lib/readers/urlMetaData')
 
 urlReader.nextUrl("input/inputURLList.txt", config.aylien, result => {
-	console.log(result);
+	console.log("File Reader", result);
 	var aylien = require('./lib/ServiceProviders/analysis');
 	aylien.analyse(config.aylien, result, (snapshots) => {
 		var mymongo = new mongo(config.mongodb.url, 'Reviews');
 		mymongo.InsertBulkAnalysis(snapshots);
+		//console.log(snapshots[1].results[2].endpoint);
 	});
 });
 		
