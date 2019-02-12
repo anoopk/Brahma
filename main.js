@@ -4,8 +4,8 @@ const config = require('./config.json');
 const urlReader = require('./lib/readers/urlMetaData')
 urlReader.nextUrl("input/inputURLList.txt", config.aylien, result => {
 	console.log(result);
-	var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
-	reviewanalysis.analyse(config.aylien, config.mongodb, result);	
+	var aylien = require('./lib/ServiceProviders/aylien');
+	//aylien.analyse(config.aylien, config.mongodb, result);	
 });
 		
 var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
