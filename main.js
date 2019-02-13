@@ -15,7 +15,7 @@ urlReader.nextUrl("input/inputURLList.txt", config.aylien, urlObj => {
 		var us = require('./lib/upstream.js');
 		us.aggregate(snapshots, config.mongodb, function(snapshot){
 			var mymongo = new mongo(config.mongodb.url, "Statistics");
-			mymongo.store1(snapshot, function(){
+			mymongo.store(snapshots, function(){
 				console.log("Upstream statistics added.");
 			});			
 		});;
