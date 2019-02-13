@@ -6,11 +6,11 @@ urlReader.nextUrl("input/inputURLList.txt", config.aylien, urlObj => {
 	const mongo = require('./lib/Stores/mongo');
 	var mymongo = new mongo(config.mongodb.url, 'Reviews');
 	aylien.analyse(config.aylien, urlObj, (snapshots) => {
-		//mymongo.store(snapshots, urlObj);		
+		mymongo.store(snapshots);		
 		
-		//const logger = require('./lib/Stores/logger');		
-		//var append = true;
-		//logger.store("mongo.db.data", JSON.stringify(snapshots), append);
+		const logger = require('./lib/Stores/logger');		
+		var append = true;
+		logger.store("mongo.db.data", JSON.stringify(snapshots), append);
 		
 		var us = require('./lib/upstream.js');
 		us.aggregate(snapshots, config.mongodb, function(snapshot){
@@ -22,10 +22,6 @@ urlReader.nextUrl("input/inputURLList.txt", config.aylien, urlObj => {
 	});
 });
 
-//
-//var newobj = {"sentiment":.45, "organization":"Maruti", "product":"WagonR", "analysis":"sentiment"};
-//var newobj = {"sentiment":.45, "entity":"Suzuki", "analysis":"sentiment"};
-//us.aggregate(newobj, config.aylien.watch, config.mongodb, config.watch);
 
 
 
