@@ -1,15 +1,16 @@
-var lr = require('line-reader');
-const config = require('./config.json');
-const mongo = require('./lib/Stores/mongo')
-const urlReader = require('./lib/readers/urlMetaData')
 
+const config = require('./config.json')
+
+const urlReader = require('./lib/readers/urlMetaData')
 urlReader.nextUrl("input/inputURLList.txt", config.aylien, result => {
-	console.log("File Reader", result);
 	var aylien = require('./lib/ServiceProviders/analysis');
+	const mongo = require('./lib/Stores/mongo');
+	var mymongo = new mongo(config.mongodb.url, 'Reviews');
 	aylien.analyse(config.aylien, result, (snapshots) => {
-		var mymongo = new mongo(config.mongodb.url, 'Reviews');
-		mymongo.InsertBulkAnalysis(snapshots);
-		//console.log(snapshots[1].results[2].endpoint);
+		mymongo.store(snapshots);
+		
+		const logger = require('./lib/Stores/logger');		
+		logger.store("mongo.db.data", JSON.stringify(snapshots));
 	});
 });
 		
