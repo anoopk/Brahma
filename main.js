@@ -7,18 +7,12 @@ urlReader.nextUrl("input/inputURLList.txt", config.aylien, urlObj => {
 	const mongo = require('./lib/Stores/mongo');
 	var mymongo = new mongo(config.mongodb.url, 'Reviews');
 	aylien.analyse(config.aylien, urlObj, (snapshots) => {
-		mymongo.store(snapshots);		
+		mymongo.store(snapshots, urlObj);		
 		const logger = require('./lib/Stores/logger');		
-		//logger.store("mongo.db.data", JSON.stringify(snapshots));
+		var append = true;
+		logger.store("mongo.db.data", JSON.stringify(snapshots), append);
 	});
 });
-		
-//var reviewanalysis = require('./lib/sources/reviews/analysis_api_input');
-//var pr = reviewanalysis.analyse(config.aylien, config.mongodb, config.sources);
-
-//var wikianalysis = require('./lib/sources/wiki/analysis_api_input');
-//wikianalysis.analyse(config.aylien, config.mongodb, config.sources);
-
 
 //var us = require('./lib/upstream.js');
 //var newobj = {"sentiment":.45, "organization":"Maruti", "product":"WagonR", "analysis":"sentiment"};
