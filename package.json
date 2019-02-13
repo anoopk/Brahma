@@ -6,6 +6,8 @@
   "dependencies": {
     "aylien_textapi": "^0.7.0",
     "bst": "^0.0.1",
+    "gherkin-easy": "^1.2.0",
+    "jest": "^24.1.0",
     "lambda-local": "^1.5.2",
     "line-reader": "^0.4.0",
     "lodash": "^4.17.11",
@@ -14,7 +16,9 @@
     "package.json": "^2.0.1",
     "request": "^2.88.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "cucumber": "^5.1.0"
+  },
   "scripts": {
     "test": "main"
   },
