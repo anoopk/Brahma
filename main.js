@@ -2,15 +2,14 @@
 const config = require('./config.json')
 
 const urlReader = require('./lib/readers/urlMetaData')
-urlReader.nextUrl("input/inputURLList.txt", config.aylien, result => {
+urlReader.nextUrl("input/inputURLList.txt", config.aylien, urlObj => {
 	var aylien = require('./lib/ServiceProviders/analysis');
 	const mongo = require('./lib/Stores/mongo');
 	var mymongo = new mongo(config.mongodb.url, 'Reviews');
-	aylien.analyse(config.aylien, result, (snapshots) => {
-		mymongo.store(snapshots);
-		
+	aylien.analyse(config.aylien, urlObj, (snapshots) => {
+		mymongo.store(snapshots);		
 		const logger = require('./lib/Stores/logger');		
-		logger.store("mongo.db.data", JSON.stringify(snapshots));
+		//logger.store("mongo.db.data", JSON.stringify(snapshots));
 	});
 });
 		
