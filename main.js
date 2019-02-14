@@ -1,7 +1,7 @@
 //const config = require('./config.json')
 const urlReader = require('./lib/readers/urlMetaData')
 
-function serve(event, callback){
+function serve(event){
 	const config  = event;
 	const response = {
 		statusCode: 200,
@@ -9,7 +9,7 @@ function serve(event, callback){
 	};
 	
 	//Read the metadata 
-	urlReader.nextUrl("input/inputURLList.txt", config.aylien, urlObj => {
+	urlReader.nextUrl("input/inputURLList.txt", config.aylien, (urlObj) => {
 		var aylien = require('./lib/Transformers/transform-sd');
 		const mongo = require('./lib/Stores/mongo');
 		
@@ -29,10 +29,8 @@ function serve(event, callback){
 			us.aggregate(snapshots, config.mongodb, function(snapshot){
 				mongo.store(snapshot, config.mongodb.url, 'Statistics', function(snapshot){
 					console.log("Upstream statistics added.");
-					return snapshot;
 				});			
 			});;
-			
 		});
 	});
 }
