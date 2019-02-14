@@ -6,7 +6,6 @@ function serve(event){
 	console.log(config);
 	//Read the metadata 
 	urlReader.nextUrl("input/inputURLList.txt", config.aylien, urlObj => {
-		callback(urlObj);
 		var aylien = require('./lib/Transformers/transform-sd');
 		const mongo = require('./lib/Stores/mongo');
 		
@@ -24,7 +23,7 @@ function serve(event){
 			//Aggregate the data upstream. As of now this is a naive aggregation as a POC.
 			var us = require('./lib/Aggregators/aggregate-sd.js');
 			us.aggregate(snapshots, config.mongodb, function(snapshot){
-				mongo.store(snapshots, config.mongodb.url, 'Statistics', function(){
+				mongo.store(snapshot, config.mongodb.url, 'Statistics', function(){
 					console.log("Upstream statistics added.");
 				});			
 			});;
