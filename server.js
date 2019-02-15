@@ -1,3 +1,5 @@
+const lambdaLocal = require('lambda-local');
+
 exports.handler = async(event, context) => {
 	const config  = event;
 	//Read the metadata 
@@ -9,7 +11,16 @@ exports.handler = async(event, context) => {
 		//Store the results in Mongo
 		config.mongodb.snapshots = snapshots;
 		config.mongodb.db = config.mongodb.databases.analysis;
-		mongo.store(config.mongodb, {}, (result) => {});		
+		
+		lambdaLocal.execute({
+			event: config.mongodb,
+			lambdaPath: './lib/Stores/mongo',
+			timeoutMs: 13000
+		}).then(function(done) {
+			console.log("done");
+		});			
+		
+		//mongo.store(config.mongodb, {}, (result) => {});		
 		
 		//Log the Aylien snapshots locally
 		const logger = require('./lib/Stores/logger');		
@@ -21,11 +32,19 @@ exports.handler = async(event, context) => {
 		config.mongodb.snapshots = snapshots;		
 		var us = require('./lib/Aggregators/sd.js');
 		us.aggregate(config.mongodb, {}, function(snapshot){
-			config.mongodb.snapshot = snapshot;
+			config.mongodb.snapshots[0] = snapshot;
 			config.mongodb.db = config.mongodb.databases.aggregate;
-			mongo.store(config.mongodb, {}, function(snapshot){
-				console.log("Upstream statistics added.");
+			lambdaLocal.execute({
+				event: config.mongodb,
+				lambdaPath: './lib/Stores/mongo',
+				timeoutMs: 3000
+			}).then(function(done) {
+				console.log("done");
 			});			
+			
+			//mongo.store(config.mongodb, {}, function(snapshot){
+			//	console.log("Upstream statistics added.");
+			//});			
 		});;
 	});
 }
