@@ -20,7 +20,7 @@
     "cucumber": "^5.1.0"
   },
   "scripts": {
-    "test": "main"
+    {"test": "./node_modules/.bin/cucumber-js"}
   },
   "repository": {
     "type": "git",

@@ -22,5 +22,9 @@
 	"sources": {
 			"url": "input/inputUrlList.txt",
 			"urlWithMetadata": "input/inputUrlList.txt"
+	},
+	"logger": {
+		"filename": "mongo_db.data",
+		"append": false
 	}
 }
