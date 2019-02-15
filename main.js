@@ -10,7 +10,7 @@ function main(){
 		lambdaLocal.execute({
 			event: config,
 			lambdaPath: './server',
-			timeoutMs: 13000
+			timeoutMs: 3000
 		}).then(function(done) {
 			console.log("done");
 		});			
