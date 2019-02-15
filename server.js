@@ -1,4 +1,4 @@
-exports.handler = async(event) => {
+exports.handler = async(event, context) => {
 	const config  = event;
 	//Read the metadata 
 	var aylien = require('./lib/Transformers/sd');
