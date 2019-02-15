@@ -7,7 +7,7 @@ exports.handler = async(event, context) => {
 	const mongo = require('./lib/Stores/mongo');
 	//Send URL text to Aylien API analyse for Classification of subject, Sentiment, Aspect Based Sentiments and Entity Detection.
 	//Transform the return JSON 
-	aylien.handler(config.aylien, {}).then(function(snapshots){
+	await aylien.handler(config.aylien, {}).then(function(snapshots){
 		config.mongodb.snapshots = snapshots;
 		config.mongodb.db = config.mongodb.databases.analysis;
 		
@@ -33,8 +33,9 @@ exports.handler = async(event, context) => {
 			config.mongodb.snapshots = result;
 			config.mongodb.db = config.mongodb.databases.aggregate;
 			mongo.handler(config.mongodb, {}, () => console.log("Data moved to Mongo"));
-		});		
+		});				
 	});
+
 }
 
 
