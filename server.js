@@ -7,7 +7,7 @@ exports.handler = async(event, context) => {
 	const mongo = require('./lib/Stores/mongo');
 	//Send URL text to Aylien API analyse for Classification of subject, Sentiment, Aspect Based Sentiments and Entity Detection.
 	//Transform the return JSON 
-	await aylien.handler(config.aylien, {}).then(function(snapshots){
+	await aylien.handler(config.aylien, {}).then(async function(snapshots){
 		config.mongodb.snapshots = snapshots;
 		config.mongodb.db = config.mongodb.databases.analysis;
 		
@@ -26,13 +26,16 @@ exports.handler = async(event, context) => {
 		logger.handler(config.logger, {}).then((result) => { console.log("Local copies of data made.");});
 		
 		var us = require('./lib/Aggregators/sd');
-		config.mongodb.snapshots = snapshots;
-		us.handler(config.mongodb, {}, (result) => { 
+		config.upstream = {};
+		config.upstream.url = config.mongodb.url;
+		config.upstream.snapshots = snapshots;
+		//config.upstream.db = config.mongodb.databases.analysis;
+		await us.handler(config.mongodb, {}, (result) => { 
 			console.log("Upstream data aggregated.");
 			var mongo = require('./lib/Stores/mongo');
-			config.mongodb.snapshots = result;
-			config.mongodb.db = config.mongodb.databases.aggregate;
-			mongo.handler(config.mongodb, {}, () => console.log("Data moved to Mongo"));
+			config.upstream.snapshots = result;
+			config.upstream.db = config.mongodb.databases.aggregate;
+			mongo.handler(config.upstream, {}, () => {console.log("Data moved to Mongo")});
 		});				
 	});
 
