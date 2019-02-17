@@ -9,7 +9,10 @@
 			"product":["Wagon R", "i10", "i20"]
 		},
 		"organization": "Maruti",
-		"product": "WagonR"
+		"product": "WagonR",
+		"lambdaPath": "./lib/Transformers/sd",
+		"lambdaImport": true,
+		"message": "Aylienization complete."	
     },
     "mongodb": {
         "url": "mongodb://anoop:Rucksa0k@cluster0-shard-00-00-tcllz.mongodb.net:27017,cluster0-shard-00-01-tcllz.mongodb.net:27017,cluster0-shard-00-02-tcllz.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true",
@@ -17,7 +20,10 @@
 			"analysis": "Analysis",
 			"wiki":"Wiki",
 			"aggregate": "Statistics"
-		}
+		},
+		"lambdaPath": "./lib/Stores/mongo",
+		"lambdaLocal": true,
+		"message": "Mongoisation complete."	
     },
 	"upstream": {
 		"url": "mongodb://anoop:Rucksa0k@cluster0-shard-00-00-tcllz.mongodb.net:27017,cluster0-shard-00-01-tcllz.mongodb.net:27017,cluster0-shard-00-02-tcllz.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true"
