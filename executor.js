@@ -13,7 +13,6 @@ exports.handler = async(event, context) => {
 	};		
 	
 	if(event.lambdaLocal){
-		console.log("Mongoising .. ", event);
 		await lambdaLocal.execute({
 			event: event,
 			context: context,
