@@ -18,18 +18,18 @@ exports.handler = async(event, context) => {
 		config.logger.snapshots = snapshots;
 		logger.handler(config.logger, {}).then((result) => { console.log("Local copies of data made.");});
 		
-		//var us = require('./lib/Aggregators/sd');
-		//config.upstream = {};
-		//config.upstream.url = config.mongodb.url;
-		//config.upstream.snapshots = snapshots;
-		//config.upstream.db = config.mongodb.databases.analysis;
-		//await us.handler(config.mongodb, {}, (result) => { 
-		//	console.log("Upstream data aggregated.");
-		//	var mongo = require('./lib/Stores/mongo');
-		//	config.upstream.snapshots = result;
-		//	config.upstream.db = config.mongodb.databases.aggregate;
-		//	mongo.handler(config.upstream, {}, () => {console.log("Data moved to Mongo")});
-		//});				
+		var us = require('./lib/Aggregators/sd');
+		config.upstream = {};
+		config.upstream.url = config.mongodb.url;
+		config.upstream.snapshots = snapshots;
+		config.upstream.db = config.mongodb.databases.analysis;
+		await us.handler(config.mongodb, {}, (result) => { 
+			console.log("Upstream data aggregated.");
+			var mongo = require('./lib/Stores/mongo');
+			config.upstream.snapshots = result;
+			config.upstream.db = config.mongodb.databases.aggregate;
+			mongo.handler(config.upstream, {}, () => {console.log("Data moved to Mongo")});
+		});				
 	});
 	console.log("Service shutting");
 }
